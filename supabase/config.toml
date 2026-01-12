@@ -1,0 +1,4 @@
+project_id = "ipclhpknygataahqhqum"
+
+[functions.haircare-chat]
+verify_jwt = false
