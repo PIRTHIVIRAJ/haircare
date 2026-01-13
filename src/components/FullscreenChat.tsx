@@ -62,6 +62,55 @@ const FullscreenChat = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastSubmitTrigger = useRef(0);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+
+  // Handle mobile keyboard visibility and viewport changes
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const updateViewportHeight = () => {
+      if (window.visualViewport) {
+        const newHeight = window.visualViewport.height;
+        setViewportHeight(newHeight);
+        // Ensure header stays visible when keyboard appears/disappears
+        requestAnimationFrame(() => {
+          const chatContainer = messagesContainerRef.current?.parentElement;
+          if (chatContainer) {
+            // Reset scroll to keep header visible
+            chatContainer.scrollTop = 0;
+          }
+        });
+      } else {
+        setViewportHeight(window.innerHeight);
+      }
+    };
+
+    // Initial height
+    updateViewportHeight();
+
+    // Listen to viewport changes (keyboard show/hide)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewportHeight);
+      // Prevent the visual viewport from scrolling the header out of view
+      window.visualViewport.addEventListener('scroll', (e) => {
+        // If header is scrolled out of view, reset scroll
+        if (window.visualViewport && window.visualViewport.offsetTop > 0) {
+          window.scrollTo(0, 0);
+        }
+      });
+    } else {
+      window.addEventListener('resize', updateViewportHeight);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateViewportHeight);
+        window.visualViewport.removeEventListener('scroll', () => { });
+      } else {
+        window.removeEventListener('resize', updateViewportHeight);
+      }
+    };
+  }, [isOpen]);
 
   // Handle close with fade animation
   const handleClose = () => {
@@ -667,11 +716,13 @@ const FullscreenChat = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-background/50 dark:bg-background/80 backdrop-blur-[16px]"
+      className="fixed inset-0 z-[100] bg-background/50 dark:bg-background/80 backdrop-blur-[16px] overflow-hidden"
       style={{
         WebkitBackdropFilter: 'blur(16px)',
         opacity: isClosing ? 0 : 1,
         transition: 'opacity 300ms ease-out',
+        height: viewportHeight ? `${viewportHeight}px` : '100vh',
+        maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
       }}
     >
       {/* Top action buttons */}
@@ -728,9 +779,16 @@ const FullscreenChat = ({
       </div>
 
       {/* Chat container */}
-      <div className="h-full flex flex-col max-w-4xl mx-auto px-4 sm:px-6">
+      <div
+        className="flex flex-col max-w-4xl mx-auto px-4 sm:px-6"
+        style={{
+          height: viewportHeight ? `${viewportHeight}px` : '100vh',
+          maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
+          overflow: 'hidden',
+        }}
+      >
         {/* Header */}
-        <div className="pt-8 pb-4 text-center animate-slide-down relative">
+        <div className="pt-8 pb-4 text-center animate-slide-down relative flex-shrink-0">
           {/* Mobile close button in header - visible on small screens */}
           <button
             onClick={handleClose}
