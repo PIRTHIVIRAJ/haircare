@@ -63,7 +63,6 @@ const FullscreenChat = ({
   const lastSubmitTrigger = useRef(0);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [viewportHeight, setViewportHeight] = useState<number | null>(null);
-  const [viewportOffsetTop, setViewportOffsetTop] = useState(0);
 
   // Handle mobile keyboard visibility and viewport changes
   useEffect(() => {
@@ -72,39 +71,22 @@ const FullscreenChat = ({
     const updateViewport = () => {
       if (window.visualViewport) {
         const newHeight = window.visualViewport.height;
-        const offsetTop = window.visualViewport.offsetTop;
         setViewportHeight(newHeight);
-        setViewportOffsetTop(offsetTop);
 
-        // Prevent page scroll when keyboard appears - lock scroll position
-        if (offsetTop > 0) {
-          // Lock the scroll position to prevent header from going off-screen
-          const currentScrollY = window.scrollY;
-          window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'auto'
-          });
-
-          // Also prevent any further scrolling
-          document.documentElement.style.overflow = 'hidden';
-          document.body.style.overflow = 'hidden';
-          document.body.style.position = 'fixed';
-          document.body.style.width = '100%';
-        } else {
-          // Restore scrolling when keyboard is hidden
-          document.documentElement.style.overflow = '';
-          document.body.style.overflow = '';
-          document.body.style.position = '';
-          document.body.style.width = '';
-        }
+        // Always prevent page scroll - keep header fixed
+        window.scrollTo(0, 0);
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.top = '0';
       } else {
         setViewportHeight(window.innerHeight);
-        setViewportOffsetTop(0);
         document.documentElement.style.overflow = '';
         document.body.style.overflow = '';
         document.body.style.position = '';
         document.body.style.width = '';
+        document.body.style.top = '';
       }
     };
 
@@ -745,16 +727,20 @@ const FullscreenChat = ({
         transition: 'opacity 300ms ease-out',
         height: viewportHeight ? `${viewportHeight}px` : '100vh',
         maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
-        top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
       }}
     >
-      {/* Fixed Header - always visible at top */}
+      {/* Fixed Header - always visible at top of viewport */}
       <div
         className="fixed left-0 right-0 z-[105] bg-background/95 dark:bg-background/95 backdrop-blur-[16px] border-b border-border/50"
         style={{
           WebkitBackdropFilter: 'blur(16px)',
-          top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
+          top: '0',
           paddingTop: '0',
+          position: 'fixed',
         }}
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -781,11 +767,12 @@ const FullscreenChat = ({
         </div>
       </div>
 
-      {/* Top action buttons - fixed to visual viewport top */}
+      {/* Top action buttons - fixed to viewport top */}
       <div
         className="fixed right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2"
         style={{
-          top: viewportOffsetTop > 0 ? `${80 + viewportOffsetTop}px` : '80px',
+          top: '80px',
+          position: 'fixed',
         }}
       >
         <button
@@ -841,22 +828,18 @@ const FullscreenChat = ({
 
       {/* Chat container - messages area only */}
       <div
-        className="flex flex-col max-w-4xl mx-auto px-4 sm:px-6"
+        className="absolute left-0 right-0 bottom-0 max-w-4xl mx-auto px-4 sm:px-6"
         style={{
-          height: viewportHeight ? `${viewportHeight}px` : '100vh',
-          maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
+          top: '140px', // Start below fixed header
           overflow: 'hidden',
-          paddingTop: viewportOffsetTop > 0 ? '140px' : '140px', // Space for fixed header
         }}
       >
-        {/* Messages */}
+        {/* Messages - only this area scrolls */}
         <div
           ref={messagesContainerRef}
-          className="overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
+          className="h-full overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
           style={{
             animationDelay: '0.1s',
-            height: viewportHeight ? `calc(${viewportHeight}px - 140px)` : 'calc(100vh - 140px)',
-            maxHeight: viewportHeight ? `calc(${viewportHeight}px - 140px)` : 'calc(100vh - 140px)',
           }}
         >
           <div className="space-y-6">
