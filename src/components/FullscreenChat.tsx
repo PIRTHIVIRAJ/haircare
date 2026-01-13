@@ -675,7 +675,7 @@ const FullscreenChat = ({
       }}
     >
       {/* Top action buttons */}
-      <div className="absolute top-20 right-4 z-[110] flex items-center gap-2">
+      <div className="absolute top-20 right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2">
         <button
           onClick={() => void handleDownloadChat()}
           className="w-10 h-10 sm:w-11 sm:h-11 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center hover:bg-primary/20 active:bg-primary/30 transition-colors shadow-sm"
@@ -754,7 +754,7 @@ const FullscreenChat = ({
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+          className="flex-1 overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
           style={{ animationDelay: '0.1s' }}
         >
           <div className="space-y-6">

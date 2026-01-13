@@ -599,7 +599,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[120] glass">
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-11 h-11 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors duration-300 overflow-hidden">
@@ -723,31 +723,30 @@ const Header = () => {
             <UserMenu />
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 rounded-xl hover:bg-foreground/5 transition-colors text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Menu Button and Dark Mode Toggle */}
+          <div className="lg:hidden flex items-center gap-2">
+            {/* Dark Mode Toggle - visible on mobile */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-xl hover:bg-foreground/5 transition-colors text-foreground"
+              aria-label="Toggle dark mode"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            {/* Mobile Menu Button */}
+            <button
+              className="p-2 rounded-xl hover:bg-foreground/5 transition-colors text-foreground"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <nav className="lg:hidden mt-4 pb-4 border-t border-border/50 pt-4 animate-fade-in max-h-[70vh] overflow-y-auto">
-            {/* Mobile Dark Mode Toggle */}
-            <div className="flex items-center justify-between px-2 py-3 mb-2 border-b border-border/30">
-              <span className="font-medium text-foreground">Dark Mode</span>
-              <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 rounded-lg bg-foreground/5 hover:bg-foreground/10 transition-colors text-foreground"
-                aria-label="Toggle dark mode"
-              >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-            </div>
-            
             <div className="space-y-2">
               {Object.entries(navigationItems).map(([key, category]) => {
                 const hasItems = 'items' in category && category.items !== null;

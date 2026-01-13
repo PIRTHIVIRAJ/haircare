@@ -161,17 +161,17 @@ const FloatingChatBar = ({
   // Get animation style for the compact pill
   const getAnimationStyle = () => {
     if (isChatOpen) {
-      return 'bottom 800ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 800ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+      return 'bottom 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
     }
-    // Fast smooth animation when minimizing (scrolling down) - smooth slide down
+    // Smooth animation when minimizing (scrolling down) - smooth slide down
     if (showBounceIn) {
-      return 'bottom 300ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1), width 300ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 300ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+      return 'bottom 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
     }
-    // Fast animation when expanding from bottom to up (showBounceOut) - smooth slide up
+    // Smooth animation when expanding from bottom to up (showBounceOut) - smooth slide up
     if (showBounceOut) {
-      return 'bottom 300ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1), width 300ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 300ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+      return 'bottom 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
     }
-    return 'bottom 800ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 800ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+    return 'bottom 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), max-width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)';
   };
 
   return (
@@ -201,7 +201,7 @@ const FloatingChatBar = ({
         className="text-xs text-muted-foreground mt-3 text-center"
         style={{
           opacity: isChatOpen ? 1 : 0,
-          transition: 'opacity 1000ms ease-out 800ms',
+          transition: 'opacity 1000ms ease-out 1000ms',
           pointerEvents: isChatOpen ? 'auto' : 'none',
         }}
       >

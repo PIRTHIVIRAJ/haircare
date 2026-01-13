@@ -78,8 +78,8 @@ const ChatInputBar = ({
         style={{
           flex: '1 1 auto',
           gap: showExpanded ? '12px' : '12px',
-          // Fast transition when expanding or minimizing
-          transition: (isExpanding || isMinimizing) ? 'gap 300ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'gap 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+          // Smooth transition when expanding or minimizing
+          transition: (isExpanding || isMinimizing) ? 'gap 1000ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'gap 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
         }}
       >
         {/* AI Icon */}
@@ -89,8 +89,8 @@ const ChatInputBar = ({
             style={{
               width: showExpanded ? '36px' : '28px',
               height: showExpanded ? '36px' : '28px',
-              // Fast transition when expanding or minimizing
-              transition: (isExpanding || isMinimizing) ? 'width 300ms cubic-bezier(0.25, 0.1, 0.25, 1), height 300ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), height 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+              // Smooth transition when expanding or minimizing
+              transition: (isExpanding || isMinimizing) ? 'width 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), height 1000ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1), height 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
             }}
           >
             <Sparkles className="w-4 h-4 text-primary" />
@@ -103,8 +103,8 @@ const ChatInputBar = ({
           style={{
             opacity: showExpanded ? 1 : 0,
             flex: showExpanded ? '1 1 auto' : '0 0 0px',
-            // Fast transition when expanding or minimizing
-            transition: (isExpanding || isMinimizing) ? 'opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1), flex 300ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'opacity 600ms cubic-bezier(0.25, 0.1, 0.25, 1), flex 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+            // Smooth transition when expanding or minimizing
+            transition: (isExpanding || isMinimizing) ? 'opacity 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), flex 1000ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'opacity 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), flex 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
           }}
         >
           <input
@@ -125,8 +125,8 @@ const ChatInputBar = ({
           style={{
             opacity: showExpanded ? 1 : 0,
             width: showExpanded ? '32px' : '0px',
-            // Fast transition when expanding or minimizing
-            transition: (isExpanding || isMinimizing) ? 'opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1), width 300ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'opacity 600ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+            // Smooth transition when expanding or minimizing
+            transition: (isExpanding || isMinimizing) ? 'opacity 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1000ms cubic-bezier(0.25, 0.1, 0.25, 1)' : 'opacity 1000ms cubic-bezier(0.25, 0.1, 0.25, 1), width 1500ms cubic-bezier(0.25, 0.1, 0.25, 1)',
           }}
         >
           <button
