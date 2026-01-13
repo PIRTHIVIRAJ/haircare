@@ -748,6 +748,39 @@ const FullscreenChat = ({
         top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
       }}
     >
+      {/* Fixed Header - always visible at top */}
+      <div
+        className="fixed left-0 right-0 z-[105] bg-background/50 dark:bg-background/80 backdrop-blur-[16px]"
+        style={{
+          WebkitBackdropFilter: 'blur(16px)',
+          top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
+          paddingTop: viewportOffsetTop > 0 ? '0' : '0',
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="pt-8 pb-4 text-center animate-slide-down relative">
+            {/* Mobile close button in header - visible on small screens */}
+            <button
+              onClick={handleClose}
+              className="absolute top-0 left-0 sm:hidden w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center hover:bg-muted active:bg-muted/80 transition-colors shadow-2xl z-[120]"
+              style={{ touchAction: 'manipulation' }}
+              title="Close chat"
+              aria-label="Close chat"
+            >
+              <X className="w-6 h-6 text-foreground font-bold" />
+            </button>
+
+            <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-4">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">AI Hair Advisor</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Private & confidential conversation
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Top action buttons - fixed to visual viewport top */}
       <div
         className="fixed right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2"
@@ -806,42 +839,16 @@ const FullscreenChat = ({
         </button>
       </div>
 
-      {/* Chat container */}
+      {/* Chat container - messages area only */}
       <div
         className="flex flex-col max-w-4xl mx-auto px-4 sm:px-6"
         style={{
           height: viewportHeight ? `${viewportHeight}px` : '100vh',
           maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
           overflow: 'hidden',
+          paddingTop: '140px', // Space for fixed header
         }}
       >
-        {/* Header - stays at top of container */}
-        <div
-          className="pt-8 pb-4 text-center animate-slide-down relative flex-shrink-0"
-          style={{
-            zIndex: 10,
-            backgroundColor: 'transparent',
-          }}
-        >
-          {/* Mobile close button in header - visible on small screens */}
-          <button
-            onClick={handleClose}
-            className="absolute top-0 left-0 sm:hidden w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center hover:bg-muted active:bg-muted/80 transition-colors shadow-2xl z-[120]"
-            style={{ touchAction: 'manipulation' }}
-            title="Close chat"
-            aria-label="Close chat"
-          >
-            <X className="w-6 h-6 text-foreground font-bold" />
-          </button>
-
-          <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-4">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">AI Hair Advisor</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Private & confidential conversation
-          </p>
-        </div>
 
         {/* Messages */}
         <div
