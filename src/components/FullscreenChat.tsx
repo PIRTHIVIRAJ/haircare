@@ -62,57 +62,22 @@ const FullscreenChat = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastSubmitTrigger = useRef(0);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
 
-  // Handle mobile keyboard visibility and viewport changes
+  // Prevent body scroll when chat is open - keep header and messages fixed
+  // Input bar (FloatingChatBar) will move naturally when keyboard appears (like ChatGPT)
   useEffect(() => {
-    if (!isOpen) return;
-
-    const updateViewport = () => {
-      if (window.visualViewport) {
-        const newHeight = window.visualViewport.height;
-        setViewportHeight(newHeight);
-
-        // Always prevent page scroll - keep header fixed
-        window.scrollTo(0, 0);
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-        document.body.style.position = 'fixed';
-        document.body.style.width = '100%';
-        document.body.style.top = '0';
-      } else {
-        setViewportHeight(window.innerHeight);
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.top = '';
-      }
-    };
-
-    // Initial values
-    updateViewport();
-
-    // Listen to viewport changes (keyboard show/hide)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', updateViewport);
-      window.visualViewport.addEventListener('scroll', updateViewport);
+    if (isOpen) {
+      // Lock page scroll - header and messages stay completely fixed, no offset changes
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
     } else {
-      window.addEventListener('resize', updateViewport);
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', updateViewport);
-        window.visualViewport.removeEventListener('scroll', updateViewport);
-      } else {
-        window.removeEventListener('resize', updateViewport);
-      }
-      // Cleanup: restore scrolling
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
+    }
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -725,12 +690,6 @@ const FullscreenChat = ({
         WebkitBackdropFilter: 'blur(16px)',
         opacity: isClosing ? 0 : 1,
         transition: 'opacity 300ms ease-out',
-        height: viewportHeight ? `${viewportHeight}px` : '100vh',
-        maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
       }}
     >
       {/* Fixed Header - always visible at top of viewport */}
@@ -831,10 +790,11 @@ const FullscreenChat = ({
         className="absolute left-0 right-0 bottom-0 max-w-4xl mx-auto px-4 sm:px-6"
         style={{
           top: '140px', // Start below fixed header
+          bottom: '0', // Extend to bottom (input bar will be above)
           overflow: 'hidden',
         }}
       >
-        {/* Messages - only this area scrolls */}
+        {/* Messages - only this area scrolls, header stays fixed */}
         <div
           ref={messagesContainerRef}
           className="h-full overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
