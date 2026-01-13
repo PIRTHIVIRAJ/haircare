@@ -750,11 +750,11 @@ const FullscreenChat = ({
     >
       {/* Fixed Header - always visible at top */}
       <div
-        className="fixed left-0 right-0 z-[105] bg-background/50 dark:bg-background/80 backdrop-blur-[16px]"
+        className="fixed left-0 right-0 z-[105] bg-background/95 dark:bg-background/95 backdrop-blur-[16px] border-b border-border/50"
         style={{
           WebkitBackdropFilter: 'blur(16px)',
           top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
-          paddingTop: viewportOffsetTop > 0 ? '0' : '0',
+          paddingTop: '0',
         }}
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -846,15 +846,18 @@ const FullscreenChat = ({
           height: viewportHeight ? `${viewportHeight}px` : '100vh',
           maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
           overflow: 'hidden',
-          paddingTop: '140px', // Space for fixed header
+          paddingTop: viewportOffsetTop > 0 ? '140px' : '140px', // Space for fixed header
         }}
       >
-
         {/* Messages */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
-          style={{ animationDelay: '0.1s' }}
+          className="overflow-y-auto py-4 pb-40 pr-4 animate-fade-in scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent w-[93%] sm:w-full"
+          style={{
+            animationDelay: '0.1s',
+            height: viewportHeight ? `calc(${viewportHeight}px - 140px)` : 'calc(100vh - 140px)',
+            maxHeight: viewportHeight ? `calc(${viewportHeight}px - 140px)` : 'calc(100vh - 140px)',
+          }}
         >
           <div className="space-y-6">
             {messages.map((message, index) => (
