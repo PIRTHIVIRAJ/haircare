@@ -76,13 +76,35 @@ const FullscreenChat = ({
         setViewportHeight(newHeight);
         setViewportOffsetTop(offsetTop);
 
-        // Keep header visible - scroll window to top when keyboard appears
+        // Prevent page scroll when keyboard appears - lock scroll position
         if (offsetTop > 0) {
-          window.scrollTo(0, 0);
+          // Lock the scroll position to prevent header from going off-screen
+          const currentScrollY = window.scrollY;
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'auto'
+          });
+
+          // Also prevent any further scrolling
+          document.documentElement.style.overflow = 'hidden';
+          document.body.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+        } else {
+          // Restore scrolling when keyboard is hidden
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.width = '';
         }
       } else {
         setViewportHeight(window.innerHeight);
         setViewportOffsetTop(0);
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
       }
     };
 
@@ -104,6 +126,11 @@ const FullscreenChat = ({
       } else {
         window.removeEventListener('resize', updateViewport);
       }
+      // Cleanup: restore scrolling
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -718,13 +745,14 @@ const FullscreenChat = ({
         transition: 'opacity 300ms ease-out',
         height: viewportHeight ? `${viewportHeight}px` : '100vh',
         maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
+        top: viewportOffsetTop > 0 ? `${viewportOffsetTop}px` : '0',
       }}
     >
-      {/* Top action buttons - fixed to viewport top */}
+      {/* Top action buttons - fixed to visual viewport top */}
       <div
         className="fixed right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2"
         style={{
-          top: '80px',
+          top: viewportOffsetTop > 0 ? `${80 + viewportOffsetTop}px` : '80px',
         }}
       >
         <button
@@ -787,12 +815,10 @@ const FullscreenChat = ({
           overflow: 'hidden',
         }}
       >
-        {/* Header - fixed to viewport top */}
+        {/* Header - stays at top of container */}
         <div
           className="pt-8 pb-4 text-center animate-slide-down relative flex-shrink-0"
           style={{
-            position: 'sticky',
-            top: 0,
             zIndex: 10,
             backgroundColor: 'transparent',
           }}
