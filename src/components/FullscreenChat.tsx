@@ -63,51 +63,46 @@ const FullscreenChat = ({
   const lastSubmitTrigger = useRef(0);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+  const [viewportOffsetTop, setViewportOffsetTop] = useState(0);
 
   // Handle mobile keyboard visibility and viewport changes
   useEffect(() => {
     if (!isOpen) return;
 
-    const updateViewportHeight = () => {
+    const updateViewport = () => {
       if (window.visualViewport) {
         const newHeight = window.visualViewport.height;
+        const offsetTop = window.visualViewport.offsetTop;
         setViewportHeight(newHeight);
-        // Ensure header stays visible when keyboard appears/disappears
-        requestAnimationFrame(() => {
-          const chatContainer = messagesContainerRef.current?.parentElement;
-          if (chatContainer) {
-            // Reset scroll to keep header visible
-            chatContainer.scrollTop = 0;
-          }
-        });
+        setViewportOffsetTop(offsetTop);
+
+        // Keep header visible - scroll window to top when keyboard appears
+        if (offsetTop > 0) {
+          window.scrollTo(0, 0);
+        }
       } else {
         setViewportHeight(window.innerHeight);
+        setViewportOffsetTop(0);
       }
     };
 
-    // Initial height
-    updateViewportHeight();
+    // Initial values
+    updateViewport();
 
     // Listen to viewport changes (keyboard show/hide)
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', updateViewportHeight);
-      // Prevent the visual viewport from scrolling the header out of view
-      window.visualViewport.addEventListener('scroll', (e) => {
-        // If header is scrolled out of view, reset scroll
-        if (window.visualViewport && window.visualViewport.offsetTop > 0) {
-          window.scrollTo(0, 0);
-        }
-      });
+      window.visualViewport.addEventListener('resize', updateViewport);
+      window.visualViewport.addEventListener('scroll', updateViewport);
     } else {
-      window.addEventListener('resize', updateViewportHeight);
+      window.addEventListener('resize', updateViewport);
     }
 
     return () => {
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', updateViewportHeight);
-        window.visualViewport.removeEventListener('scroll', () => { });
+        window.visualViewport.removeEventListener('resize', updateViewport);
+        window.visualViewport.removeEventListener('scroll', updateViewport);
       } else {
-        window.removeEventListener('resize', updateViewportHeight);
+        window.removeEventListener('resize', updateViewport);
       }
     };
   }, [isOpen]);
@@ -725,8 +720,13 @@ const FullscreenChat = ({
         maxHeight: viewportHeight ? `${viewportHeight}px` : '100vh',
       }}
     >
-      {/* Top action buttons */}
-      <div className="absolute top-20 right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2">
+      {/* Top action buttons - fixed to viewport top */}
+      <div
+        className="fixed right-4 z-[110] flex flex-col-reverse sm:flex-row items-center gap-2"
+        style={{
+          top: '80px',
+        }}
+      >
         <button
           onClick={() => void handleDownloadChat()}
           className="w-10 h-10 sm:w-11 sm:h-11 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center hover:bg-primary/20 active:bg-primary/30 transition-colors shadow-sm"
@@ -787,8 +787,16 @@ const FullscreenChat = ({
           overflow: 'hidden',
         }}
       >
-        {/* Header */}
-        <div className="pt-8 pb-4 text-center animate-slide-down relative flex-shrink-0">
+        {/* Header - fixed to viewport top */}
+        <div
+          className="pt-8 pb-4 text-center animate-slide-down relative flex-shrink-0"
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 10,
+            backgroundColor: 'transparent',
+          }}
+        >
           {/* Mobile close button in header - visible on small screens */}
           <button
             onClick={handleClose}
